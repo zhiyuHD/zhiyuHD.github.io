@@ -144,7 +144,7 @@ def main():
 
     # Filter and split by section
     USEFUL_SECTIONS = {
-        "admin", "editors", "interpreters", "misc",
+        "admin", "editors", "interpreters", "libs", "misc",
         "net", "shells", "text", "utils", "devel",
     }
     by_section = {}
