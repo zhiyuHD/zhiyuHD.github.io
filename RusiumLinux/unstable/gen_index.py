@@ -2,14 +2,16 @@
 """Generate RusiumLinux package index from Debian Packages.gz
 
 Usage: python3 gen_index.py [--mirror MIRROR] [--suite SUITE] [--arch ARCH]
-       python3 gen_index.py --list  # list available files first
 
-Outputs: packages.json (for GitHub Pages)
+This generator produces a metadata index pointing to Debian packages.
+We do NOT host or redistribute any Debian package files (.deb).
+All .deb files are downloaded by users directly from Debian mirrors.
 
 Debian copyright attribution:
 - This index references packages from Debian GNU/Linux.
 - Debian is a registered trademark of Software in the Public Interest, Inc.
-- Individual package copyrights are included in each .deb under /usr/share/doc/<pkg>/copyright
+- Individual package copyrights are in each .deb under /usr/share/doc/<pkg>/copyright
+- GPL source code is available from Debian's source repositories
 - See https://www.debian.org/ for more information.
 """
 
@@ -33,7 +35,7 @@ def parse_packages(content):
     """Parse Debian Packages format into list of dicts"""
     packages = {}
     current = None
-    
+
     for line in content.split("\n"):
         if line == "":
             if current and "Package" in current:
@@ -41,14 +43,14 @@ def parse_packages(content):
                 packages[pkg_name] = current
             current = None
             continue
-        
+
         if line.startswith(" "):
             # Multi-line field continuation
             if current:
                 key = list(current.keys())[-1]
                 current[key] += "\n" + line.strip()
             continue
-        
+
         m = re.match(r"^([A-Za-z0-9_-]+):\s*(.*)", line)
         if m:
             key = m.group(1)
@@ -56,11 +58,11 @@ def parse_packages(content):
             if current is None:
                 current = {}
             current[key] = val
-    
+
     # Last package
     if current and "Package" in current:
         packages[current["Package"]] = current
-    
+
     return packages
 
 def generate_index(parsed, mirror, suite, arch):
@@ -77,12 +79,12 @@ def generate_index(parsed, mirror, suite, arch):
         ),
         "packages": {}
     }
-    
+
     for pkg_name, pkg_data in parsed.items():
         filename = pkg_data.get("Filename", "")
         if not filename:
             continue
-        
+
         entry = {
             "version": pkg_data.get("Version", "unknown"),
             "filename": filename,
@@ -94,15 +96,15 @@ def generate_index(parsed, mirror, suite, arch):
             "size": pkg_data.get("Size", "0"),
             "installed_size": pkg_data.get("Installed-Size", "0"),
         }
-        
+
         # Full download URL
         if not filename.startswith("/"):
             entry["url"] = f"{mirror}/{filename}"
         else:
             entry["url"] = f"{mirror}{filename}"
-        
+
         index["packages"][pkg_name] = entry
-    
+
     return index
 
 def list_suites(mirror):
@@ -126,20 +128,20 @@ def main():
     parser.add_argument("--list", action="store_true", help="List available suites and exit")
     parser.add_argument("--split", action="store_true", help="Split index into first-namespace dirs")
     args = parser.parse_args()
-    
+
     if args.list:
         suites = list_suites(args.mirror)
         print("Available suites:")
         for s in suites:
             print(f"  {s}")
         return 0
-    
+
     print(f"Generating index for {args.suite}/{args.arch} from {args.mirror}", file=sys.stderr)
-    
+
     content = fetch_packages_gz(args.mirror, args.suite, args.arch, args.component)
     parsed = parse_packages(content)
     index = generate_index(parsed, args.mirror, args.suite, args.arch)
-    
+
     # Filter and split by section
     USEFUL_SECTIONS = {
         "admin", "editors", "interpreters", "misc",
@@ -151,7 +153,7 @@ def main():
         if not section or section not in USEFUL_SECTIONS:
             continue
         by_section.setdefault(section, {})[pkg_name] = pkg_data
-    
+
     if args.split:
         # Write section-split files
         index_dir = os.path.dirname(args.output) or "."
@@ -173,16 +175,16 @@ def main():
             for pkg_name in pkgs:
                 sections_index["pkg_section"][pkg_name] = section
             print(f"  {section}: {len(pkgs)} packages -> {os.path.basename(section_file)}", file=sys.stderr)
-        
+
         # Write main index
         sections_index["total"] = sum(len(v) for v in by_section.values())
         with open(args.output, "w") as f:
             json.dump(sections_index, f, indent=1)
-        
+
         total = sum(len(v) for v in by_section.values())
         print(f"\nMain index: {args.output}", file=sys.stderr)
         print(f"Split into {len(by_section)} section files, {total} total packages", file=sys.stderr)
-        
+
         # Also generate a flat text index for easy grep-ing
         text_index_file = os.path.join(index_dir, "packages.txt")
         with open(text_index_file, "w") as f:
@@ -210,7 +212,7 @@ def main():
             json.dump(index, f, indent=1, ensure_ascii=False)
         print(f"Generated {args.output} with {len(merged)} packages", file=sys.stderr)
         print(f"Index size: {os.path.getsize(args.output)} bytes", file=sys.stderr)
-    
+
     return 0
 
 if __name__ == "__main__":

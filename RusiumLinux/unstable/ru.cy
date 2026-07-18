@@ -432,6 +432,7 @@ fn ru_info(name: *char) -> i32 {
         printf("Description: %s\n", _desc);
         printf("URL: %s\n", _url);
         printf("Source: Debian GNU/Linux (unstable)\n");
+        printf("GPL source: https://tracker.debian.org/\n");
 
         // Check if installed
         char _db[512];
@@ -516,6 +517,7 @@ fn ru_copyright(name: *char) -> i32 {
             fclose(_f);
             printf("------------------------------------------------------------\n");
             printf("Source: Debian GNU/Linux (unstable)\n");
+            printf("GPL source code: https://tracker.debian.org/pkg/<srcpkgname>\n");
             printf("See https://www.debian.org/ for Debian licensing information.\n");
             return 0;
         }
@@ -566,8 +568,8 @@ fn main() -> i32 {
         printf("  info <name>          show package details from index\n");
         printf("  copyright <name>     show package copyright\n");
         printf("\n");
-        printf("All packages sourced from Debian GNU/Linux (unstable).\n");
-        printf("See https://www.debian.org/ for licensing information.\n");
+        printf("All packages downloaded directly from Debian GNU/Linux (unstable).\n");
+        printf("GPL source code available at https://tracker.debian.org/\n");
         return 1;
     }
 
