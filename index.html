@@ -1,34 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>zhiyuHD.github.io</title>
-<style>
-body { font-family: sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; background: #0a0a0a; color: #ccc; }
-a { color: #6af; }
-pre { background: #111; padding: 1em; border-radius: 4px; overflow-x: auto; }
-</style>
-</head>
-<body>
-<h1>zhiyuHD.github.io</h1>
-<p>RusiumLinux — minimal Linux distribution based on Debian packages.</p>
-<h2>Package Index</h2>
-<p><a href="/RusiumLinux/unstable/packages.txt">packages.txt</a> — flat text index (used by <code>ru</code>)</p>
-<p><a href="/RusiumLinux/unstable/packages.json">packages.json</a> — JSON index (section lookup)</p>
-<ul>
-<li><a href="/RusiumLinux/unstable/admin.json">admin.json</a></li>
-<li><a href="/RusiumLinux/unstable/devel.json">devel.json</a></li>
-<li><a href="/RusiumLinux/unstable/editors.json">editors.json</a></li>
-<li><a href="/RusiumLinux/unstable/interpreters.json">interpreters.json</a></li>
-<li><a href="/RusiumLinux/unstable/misc.json">misc.json</a></li>
-<li><a href="/RusiumLinux/unstable/net.json">net.json</a></li>
-<li><a href="/RusiumLinux/unstable/shells.json">shells.json</a></li>
-<li><a href="/RusiumLinux/unstable/text.json">text.json</a></li>
-<li><a href="/RusiumLinux/unstable/utils.json">utils.json</a></li>
-</ul>
-<h2>Attribution</h2>
-<p>Package metadata referencing <a href="https://www.debian.org/">Debian GNU/Linux</a>. We do NOT host any .deb files — packages are downloaded directly from Debian mirrors by the user's package manager.</p>
-<p>Debian is a registered trademark of Software in the Public Interest, Inc.</p>
-</body>
-</html>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TurboWarp Packager - Convert Scratch projects to HTML, EXE, and more</title><meta name="description" content="Converts Scratch 3, 2, or 1 projects into HTML files, zip archives, or executable programs for Windows, macOS, and Linux. Faster and more customizable than HTMLifier and forkphorus."><style>body[p4-splash-theme="dark"]:not([p4-loaded]) {
+        background-color: #111;
+        color-scheme: dark;
+      }
+      .input-for-remembering-project-file {
+        display: none;
+      }</style></head><body><noscript>This page requires JavaScript.</noscript><input type="file" class="input-for-remembering-project-file" autocomplete="on"><div id="app"></div><script>(function() {
+        // This logic is only for the "splash" screen.
+        // It's used to prevent a momentary white screen while the page is loading in dark mode.
+        var theme = 'system';
+        try {
+          var local = localStorage.getItem('P4.theme')
+          if (typeof local === 'string') theme = local;
+        } catch (e) { /* ignore */ }
+        if (theme === 'system') theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.body.setAttribute('p4-splash-theme', theme);
+      })();</script><script src="js/p4.f2e1f4274b37b9ccff7e.js"></script></body></html>
